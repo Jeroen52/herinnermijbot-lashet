@@ -178,7 +178,7 @@ class Search(object):
         permalink = self.comment.permalink
         self._replyMessage +=(
             "Ik ga je het bericht herinneren op [**{0} UTC**](http://www.wolframalpha.com/input/?i={0} UTC To Local Time)"
-            " to remind you of [**this link.**]({commentPermalink})"
+            " om je hier aan te herinneren [**deze schakeling.**]({commentPermalink})"
             "{remindMeMessage}")
 
         try:
@@ -187,9 +187,9 @@ class Search(object):
             print "link had http"
         if self._privateMessage == False and self.sub.id not in self.subId:
             remindMeMessage = (
-                "\n\n[**CLICK THIS LINK**](http://np.reddit.com/message/compose/?to=HerinnerMijBot&subject=Reminder&message="
-                "[{permalink}]%0A%0AHerinnerMij! {time}) to send a PM to also be reminded and to reduce spam."
-                "\n\n^(Parent commenter can ) [^(delete this message to hide from others.)]"
+                "\n\n[**KLIK DEZE SCHAKELING**](http://np.reddit.com/message/compose/?to=HerinnerMijBot&subject=Herinner&message="
+                "[{permalink}]%0A%0AHerinnerMij! {time}) om een PB om er aan te herinnerd worden en om nepvlees te verminderen."
+                "\n\n^(Ouder commentaar kan ) [^(dit bericht verwijderen om het voor iedereen te verbergen.)]"
                 "(http://np.reddit.com/message/compose/?to=HerinnerMijBot&subject=Verwijder Commentaar&message=Verwijder! ____id____)").format(
                     permalink=permalink,
                     time=self._storeTime.replace('\n', '')
@@ -303,21 +303,21 @@ def grab_list_of_reminders(username):
     database.cursor.execute(query, [username])
     data = database.cursor.fetchall()
     table = (
-            "[**Click here to delete all your reminders at once quickly.**]"
-            "(http://np.reddit.com/message/compose/?to=HerinnerMijBot&subject=Reminder&message=RemoveAll!)\n\n"
-            "|Permalink|Message|Date|Remove|\n"
+            "[**Klik hier om alle herinneringen in één keer te verwijderen.**]"
+            "(http://np.reddit.com/message/compose/?to=HerinnerMijBot&subject=Herinner&message=VerwijderAlles!)\n\n"
+            "|Permaschakel|Bericht|Datum|Verwijder|\n"
             "|-|-|-|:-:|")
     for row in data:
         date = str(row[2])
         table += (
             "\n|" + row[0] + "|" +   row[1] + "|" + 
             "[" + date  + " UTC](http://www.wolframalpha.com/input/?i=" + str(row[2]) + " UTC to local time)|"
-            "[[X]](https://np.reddit.com/message/compose/?to=HerinnerMijBot&subject=Remove&message=Remove!%20"+ str(row[3]) + ")|"
+            "[[X]](https://np.reddit.com/message/compose/?to=HerinnerMijBot&subject=Verwijder&message=Verwijder!%20"+ str(row[3]) + ")|"
             )
     if len(data) == 0: 
-        table = "Looks like you have no reminders. Click the **[Custom]** button below to make one!"
+        table = "Ziet er naar uit dat je geen herinneringen hebt. Klik het **[Aanpassen]** knop onderaan om er een te maken!"
     elif len(table) > 9000:
-        table = "Sorry the comment was too long to display. Message /u/Jeroen52 as this was his lazy error catching."
+        table = "Sorry, het commentaar is te lang. Verstuur een bericht naar /u/Jeroen52 want dit is een luie foutmelding vangen techniek."
     table += Search.endMessage
     return table
 
@@ -368,8 +368,8 @@ def read_pm():
                 redditPM = Search(message)
                 redditPM.run(privateMessage=True)
                 message.mark_as_read()
-            elif (("delete!" in message.body.lower() or "!delete" in message.body.lower()) and prawobject):  
-                givenid = re.findall(r'delete!\s(.*?)$', message.body.lower())[0]
+            elif (("verwijder!" in message.body.lower() or "!verwijder" in message.body.lower()) and prawobject):  
+                givenid = re.findall(r'verwijder!\s(.*?)$', message.body.lower())[0]
                 givenid = 't1_'+givenid
                 comment = reddit.get_info(thing_id=givenid)
                 try:
@@ -383,24 +383,24 @@ def read_pm():
                     # comment might be deleted already
                     pass
                 message.mark_as_read()
-            elif (("myreminders!" in message.body.lower() or "!myreminders" in message.body.lower()) and prawobject):
+            elif (("mijnherinneringen!" in message.body.lower() or "!mijnherinneringen" in message.body.lower()) and prawobject):
                 listOfReminders = grab_list_of_reminders(message.author.name)
                 message.reply(listOfReminders)
                 message.mark_as_read()
-            elif (("remove!" in message.body.lower() or "!remove" in message.body.lower()) and prawobject):
-                givenid = re.findall(r'remove!\s(.*?)$', message.body.lower())[0]
+            elif (("verwijder!" in message.body.lower() or "!verwijder" in message.body.lower()) and prawobject):
+                givenid = re.findall(r'verwijder!\s(.*?)$', message.body.lower())[0]
                 deletedFlag = remove_reminder(message.author.name, givenid)
                 listOfReminders = grab_list_of_reminders(message.author.name)
                 # This means the user did own that reminder
                 if deletedFlag == True:
-                    message.reply("Reminder deleted. Your current Reminders:\n\n" + listOfReminders)
+                    message.reply("Herinnering verwijdert. Jouw huidige Herinneringen:\n\n" + listOfReminders)
                 else:
-                    message.reply("Try again with the current IDs that belong to you below. Your current Reminders:\n\n" + listOfReminders)
+                    message.reply("Probeer opnieuw met de huidige IDs die bij jouw behoren hieronder. Jouw huidige Herinneringen:\n\n" + listOfReminders)
                 message.mark_as_read()
-            elif (("removeall!" in message.body.lower() or "!removeall" in message.body.lower()) and prawobject):
+            elif (("verwijderalles!" in message.body.lower() or "!verwijderalles" in message.body.lower()) and prawobject):
                 count = str(remove_all(message.author.name))
                 listOfReminders = grab_list_of_reminders(message.author.name)
-                message.reply("I have deleted all **" + count + "** reminders for you.\n\n" + listOfReminders)
+                message.reply("Ik heb alle **" + count + "** herinneringen van jou verwijdert.\n\n" + listOfReminders)
                 message.mark_as_read()
     except Exception as err:
         print traceback.format_exc()
