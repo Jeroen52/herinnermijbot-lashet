@@ -54,23 +54,23 @@ class Reply(object):
     def __init__(self):
         self._queryDB = Connect()
         self._replyMessage =(
-            "RemindMeBot private message here!" 
-            "\n\n**The message:** \n\n>{message}"
-            "\n\n**The original comment:** \n\n>{original}"
-            "\n\n**The parent comment from the original comment or its submission:** \n\n>{parent}"
+            "HerinnerMijBot privé bericht hier!" 
+            "\n\n**Het bericht:** \n\n>{message}"
+            "\n\n**Het originele commentaar:** \n\n>{original}"
+            "\n\n**Het ouderlijke commentaar van het originele commentaar of zijn paal:** \n\n>{parent}"
             "{origin_date_text}"
-            "\n\n#Would you like to be reminded of the original comment again? Just set your time again after the RemindMe! command. [CLICK HERE]"
-            "(http://np.reddit.com/message/compose/?to=RemindMeBot&subject=Reminder&message=[{original}]"
-            "%0A%0ARemindMe!)"
+            "\n\n#Zou je het leuk vinden om het originele commentaar weer te zien? Gewoon je tijd opnieuw zetten na het HerinnerMij! opdracht. [CLICK HERE]"
+            "(http://np.reddit.com/message/compose/?to=HerinnerMijBot&subject=Herinner&message=[{original}]"
+            "%0A%0AHerinnerMij!)"
             "\n\n_____\n\n"
-            "|[^(FAQs)](http://np.reddit.com/r/RemindMeBot/comments/24duzp/remindmebot_info/)"
-            "|[^(Custom)](http://np.reddit.com/message/compose/?to=RemindMeBot&subject=Reminder&message="
-                "[LINK INSIDE SQUARE BRACKETS else default to FAQs]%0A%0A"
-                "NOTE: Don't forget to add the time options after the command.%0A%0ARemindMe!)"
-            "|[^(Your Reminders)](http://np.reddit.com/message/compose/?to=RemindMeBot&subject=List Of Reminders&message=MyReminders!)"
-            "|[^(Feedback)](http://np.reddit.com/message/compose/?to=RemindMeBotWrangler&subject=Feedback)"
-            "|[^(Code)](https://github.com/SIlver--/remindmebot-reddit)"
-            "|[^(Browser Extensions)](https://np.reddit.com/r/RemindMeBot/comments/4kldad/remindmebot_extensions/)"
+            "|[^(VGV)](http://np.reddit.com/r/HerinnerMijBot/is/wel/kut/dat/je/dit/leest/want/dit/moet/aangepast/worden/)"
+            "|[^(Aanpassen)](http://np.reddit.com/message/compose/?to=HerinnerMijBot&subject=Herinner&message="
+                "[SCHAKELTJE BINNEN VIERKANTEN HAAKJES anders standaard op VGVen]%0A%0A"
+                "NOTITIE: Niet vergeten om toe te voegen tijd opties na het opdracht.%0A%0AHerinnerMij!)"
+            "|[^(Jouw Herinnneringen)](http://np.reddit.com/message/compose/?to=HerinnerMijBot&subject=Lijst Van Herinneringen&message=MijnHerinneringen!)"
+            "|[^(Voedterug)](http://np.reddit.com/message/compose/?to=Jeroen52&subject=Voedterug)"
+            "|[^(Code)](https://github.com/Jeroen52/herinnermijbot-lashet)"
+            "|[^(Browser Extensies)](https://np.reddit.com/r/HerinnerMijBot/moeten/wij/eigenlijk/ook/maken/)"
             "\n|-|-|-|-|-|-|"
             )
 
@@ -86,12 +86,12 @@ class Reply(object):
             else:
                 return _force_utf8(reddit.get_info(thing_id=commentObj.parent_id).permalink)
         except IndexError as err:
-            print "parrent_comment error"
-            return "It seems your original comment was deleted, unable to return parent comment."
+            print "vader_commentaar foutmelding"
+            return "Het ziet er naar uit jouw originele commentaar verwijdert is, het is niet mogelijk om het ouder commentaar te krijgen."
         # Catch any URLs that are not reddit comments
         except Exception  as err:
-            print "HTTPError/PRAW parent comment"
-            return "Parent comment not required for this URL."
+            print "HTTPFoutmelding/PRAW Ouder commentaar"
+            return "Ouder commentaar niet verplicht voor dit UHZ."
 
     def time_to_reply(self):
         """
@@ -145,21 +145,21 @@ class Reply(object):
         origin_date_text = ""
         # Before feature was implemented, there are no origin dates stored
         if origin_date is not None:
-            origin_date_text =  ("\n\nYou requested this reminder on: " 
+            origin_date_text =  ("\n\nJe hebt deze herinnering gevraagt op: " 
                                 "[**" + _force_utf8(origin_date) + " UTC**](http://www.wolframalpha.com/input/?i="
                                 + _force_utf8(origin_date) + " UTC To Local Time)")
 
         try:
             reddit.send_message(
                 recipient=str(author), 
-                subject='Hello, ' + _force_utf8(str(author)) + ' RemindMeBot Here!', 
+                subject='Hallo, ' + _force_utf8(str(author)) + ' HerrinnerMijBot Hier!', 
                 message=self._replyMessage.format(
                     message=_force_utf8(message),
                     original=_force_utf8(permalink),
                     parent= self.parent_comment(permalink),
                     origin_date_text = origin_date_text
                 ))
-            print "Did It"
+            print "Gedaan Het"
             return True    
         except InvalidUser as err:
             print "InvalidUser", err

@@ -30,7 +30,7 @@ config = ConfigParser.ConfigParser()
 config.read("remindmebot.cfg")
 
 #Reddit info
-reddit = praw.Reddit(user_agent= "RemindMes")
+reddit = praw.Reddit(user_agent= "HerinnerMijs")
 o = OAuth2Util.OAuth2Util(reddit, print_log = True)
 o.refresh(force=True)
 
@@ -70,22 +70,22 @@ class Search(object):
     database.connection.close()
 
     endMessage = (
-        "\n\n_____\n\n"
-        "|[^(FAQs)](http://np.reddit.com/r/RemindMeBot/comments/24duzp/remindmebot_info/)"
-        "|[^(Custom)](http://np.reddit.com/message/compose/?to=RemindMeBot&subject=Reminder&message="
-            "[LINK INSIDE SQUARE BRACKETS else default to FAQs]%0A%0A"
-            "NOTE: Don't forget to add the time options after the command.%0A%0ARemindMe!)"
-        "|[^(Your Reminders)](http://np.reddit.com/message/compose/?to=RemindMeBot&subject=List Of Reminders&message=MyReminders!)"
-        "|[^(Feedback)](http://np.reddit.com/message/compose/?to=RemindMeBotWrangler&subject=Feedback)"
-        "|[^(Code)](https://github.com/SIlver--/remindmebot-reddit)"
-        "|[^(Browser Extensions)](https://np.reddit.com/r/RemindMeBot/comments/4kldad/remindmebot_extensions/)"
-        "\n|-|-|-|-|-|-|"
+		"\n\n_____\n\n"
+		"|[^(VGV)](http://np.reddit.com/r/HerinnerMijBot/is/wel/kut/dat/je/dit/leest/want/dit/moet/aangepast/worden/)"
+		"|[^(Aanpassen)](http://np.reddit.com/message/compose/?to=HerinnerMijBot&subject=Herinner&message="
+			"[SCHAKELTJE BINNEN VIERKANTEN HAAKJES anders standaard op VGVen]%0A%0A"
+			"NOTITIE: Niet vergeten om toe te voegen tijd opties na het opdracht.%0A%0AHerinnerMij!)"
+		"|[^(Jouw Herinnneringen)](http://np.reddit.com/message/compose/?to=HerinnerMijBot&subject=Lijst Van Herinneringen&message=MijnHerinneringen!)"
+		"|[^(Voedterug)](http://np.reddit.com/message/compose/?to=Jeroen52&subject=Voedterug)"
+		"|[^(Code)](https://github.com/Jeroen52/herinnermijbot-lashet)"
+		"|[^(Browser Extensies)](https://np.reddit.com/r/HerinnerMijBot/moeten/wij/eigenlijk/ook/maken/)"
+		"\n|-|-|-|-|-|-|"
         )
 
     def __init__(self, comment):
         self._addToDB = Connect()
         self.comment = comment # Reddit comment Object
-        self._messageInput = '"Hello, I\'m here to remind you to see the parent comment!"'
+        self._messageInput = '"Hallo, ik ben hier om je te herinneren om het ouder commentaar te lezen!"'
         self._storeTime = None
         self._replyMessage = ""
         self._replyDate = None
@@ -117,13 +117,13 @@ class Search(object):
                 try:
                     urllib.urlopen(self.comment.permalink)
                 except IOError:
-                    self.comment.permalink = "http://np.reddit.com/r/RemindMeBot/comments/24duzp/remindmebot_info/"
+                    self.comment.permalink = "http://np.reddit.com/r/HerinnerMeBot/godver/je/hebt/me/weer/betrapt//maaruh/je/url/is/niet/geldig/"
             else:
                 # Defaults when the user doesn't provide a link
-                self.comment.permalink = "http://np.reddit.com/r/RemindMeBot/comments/24duzp/remindmebot_info/"
+                self.comment.permalink = "http://np.reddit.com/r/HerinnerMeBot/je/hebt/geen/url/opgegeven/lul/"
 
         # remove RemindMe! or !RemindMe (case insenstive)
-        match = re.search(r'(?i)(!*)RemindMe(!*)', self.comment.body)
+        match = re.search(r'(?i)(!*)HerinnerMij(!*)', self.comment.body)
         # and everything before
         tempString = self.comment.body[match.start():]
 
@@ -177,7 +177,7 @@ class Search(object):
         """
         permalink = self.comment.permalink
         self._replyMessage +=(
-            "I will be messaging you on [**{0} UTC**](http://www.wolframalpha.com/input/?i={0} UTC To Local Time)"
+            "Ik ga je het bericht herinneren op [**{0} UTC**](http://www.wolframalpha.com/input/?i={0} UTC To Local Time)"
             " to remind you of [**this link.**]({commentPermalink})"
             "{remindMeMessage}")
 
@@ -187,10 +187,10 @@ class Search(object):
             print "link had http"
         if self._privateMessage == False and self.sub.id not in self.subId:
             remindMeMessage = (
-                "\n\n[**CLICK THIS LINK**](http://np.reddit.com/message/compose/?to=RemindMeBot&subject=Reminder&message="
-                "[{permalink}]%0A%0ARemindMe! {time}) to send a PM to also be reminded and to reduce spam."
+                "\n\n[**CLICK THIS LINK**](http://np.reddit.com/message/compose/?to=HerinnerMijBot&subject=Reminder&message="
+                "[{permalink}]%0A%0AHerinnerMij! {time}) to send a PM to also be reminded and to reduce spam."
                 "\n\n^(Parent commenter can ) [^(delete this message to hide from others.)]"
-                "(http://np.reddit.com/message/compose/?to=RemindMeBot&subject=Delete Comment&message=Delete! ____id____)").format(
+                "(http://np.reddit.com/message/compose/?to=HerinnerMijBot&subject=Verwijder Commentaar&message=Verwijder! ____id____)").format(
                     permalink=permalink,
                     time=self._storeTime.replace('\n', '')
                 )
@@ -210,7 +210,7 @@ class Search(object):
 
         author = self.comment.author
         def send_message():
-            reddit.send_message(author, 'Hello, ' + str(author) + ' RemindMeBot Confirmation Sent', self._replyMessage)
+            reddit.send_message(author, 'Hello, ' + str(author) + ' HerinnerMijBot Confirmation Sent', self._replyMessage)
 
         try:
             if self._privateMessage == False:
@@ -259,7 +259,7 @@ class Search(object):
             commentfound = ""
             if replies:
                 for comment in replies:
-                    if str(comment.author) == "RemindMeBot":
+                    if str(comment.author) == "HerinnerMijBot":
                         commentfound = comment
                 self.comment_count(commentfound)
         except Exception as err:
@@ -304,7 +304,7 @@ def grab_list_of_reminders(username):
     data = database.cursor.fetchall()
     table = (
             "[**Click here to delete all your reminders at once quickly.**]"
-            "(http://np.reddit.com/message/compose/?to=RemindMeBot&subject=Reminder&message=RemoveAll!)\n\n"
+            "(http://np.reddit.com/message/compose/?to=HerinnerMijBot&subject=Reminder&message=RemoveAll!)\n\n"
             "|Permalink|Message|Date|Remove|\n"
             "|-|-|-|:-:|")
     for row in data:
@@ -312,12 +312,12 @@ def grab_list_of_reminders(username):
         table += (
             "\n|" + row[0] + "|" +   row[1] + "|" + 
             "[" + date  + " UTC](http://www.wolframalpha.com/input/?i=" + str(row[2]) + " UTC to local time)|"
-            "[[X]](https://np.reddit.com/message/compose/?to=RemindMeBot&subject=Remove&message=Remove!%20"+ str(row[3]) + ")|"
+            "[[X]](https://np.reddit.com/message/compose/?to=HerinnerMijBot&subject=Remove&message=Remove!%20"+ str(row[3]) + ")|"
             )
     if len(data) == 0: 
         table = "Looks like you have no reminders. Click the **[Custom]** button below to make one!"
     elif len(table) > 9000:
-        table = "Sorry the comment was too long to display. Message /u/RemindMeBotWrangler as this was his lazy error catching."
+        table = "Sorry the comment was too long to display. Message /u/Jeroen52 as this was his lazy error catching."
     table += Search.endMessage
     return table
 
@@ -362,9 +362,9 @@ def read_pm():
         for message in reddit.get_unread(unset_has_mail=True, update_user=True, limit = 100):
             # checks to see as some comments might be replys and non PMs
             prawobject = isinstance(message, praw.objects.Message)
-            if (("remindme" in message.body.lower() or 
-                "remindme!" in message.body.lower() or 
-                "!remindme" in message.body.lower()) and prawobject):
+            if (("HerinnerMij" in message.body.lower() or 
+                "HerinnerMij!" in message.body.lower() or 
+                "!HerinnerMij" in message.body.lower()) and prawobject):
                 redditPM = Search(message)
                 redditPM.run(privateMessage=True)
                 message.mark_as_read()
@@ -410,17 +410,17 @@ def check_comment(comment):
     Checks the body of the comment, looking for the command
     """
     redditCall = Search(comment)
-    if (("remindme!" in comment.body.lower() or
-        "!remindme" in comment.body.lower()) and 
+    if (("HerinnerMij!" in comment.body.lower() or
+        "!HerinnerMij" in comment.body.lower()) and 
         redditCall.comment.id not in redditCall.commented and
-        'RemindMeBot' != str(comment.author) and
+        'HerinnerMijBot' != str(comment.author) and
         START_TIME < redditCall.comment.created_utc):
             print "in"
             t = Thread(target=redditCall.run())
             t.start()
 
 def check_own_comments():
-    user = reddit.get_redditor("RemindMeBot")
+    user = reddit.get_redditor("HerinnerMijBot")
     for comment in user.get_comments(limit=None):
         if comment.score <= -5:
             print "COMMENT DELETED"
@@ -436,8 +436,8 @@ def main():
     while True:
         try:
             # grab the request
-            request = requests.get('https://api.pushshift.io/reddit/search?q=%22RemindMe%22&limit=100', 
-                headers = {'User-Agent': 'RemindMeBot-Agent'})
+            request = requests.get('https://api.pushshift.io/reddit/search?q=%22HerinnerMij%22&limit=100', 
+                headers = {'User-Agent': 'HerinnerMijBot-Agent'})
             json = request.json()
             comments =  json["data"]
             read_pm()
